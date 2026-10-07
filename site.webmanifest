@@ -1,0 +1,15 @@
+{
+  "name": "Villa Morea — Mournies, Chania",
+  "short_name": "Villa Morea",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#113445",
+  "background_color": "#faf7f0",
+  "display": "standalone",
+  "start_url": "/"
+}
