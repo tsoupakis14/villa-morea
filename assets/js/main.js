@@ -179,7 +179,43 @@
     });
   }
 
-  /* 8. Optional analytics — only if an ID is configured (add a consent banner first!) */
+  /* 8. Contact form — AJAX submit to /contact.php (works without JS too) */
+  function initContactForm() {
+    var form = $("[data-contact-form]");
+    if (!form) return;
+    var status = $("[data-form-status]", form);
+    var btn = $('button[type="submit"]', form);
+    var arr = $("[data-date-arrival]", form), dep = $("[data-date-departure]", form);
+    var ts = $("[data-form-ts]", form);
+    if (ts) ts.value = String(Date.now());
+    function iso(d) { return d.toISOString().slice(0, 10); }
+    var today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    arr.min = iso(today); dep.min = iso(today);
+    arr.addEventListener("change", function () {
+      if (!arr.value) return;
+      var n = new Date(arr.value); n.setDate(n.getDate() + 1);
+      dep.min = iso(n);
+      if (dep.value && dep.value <= arr.value) dep.value = "";
+    });
+    function say(msg, ok) { status.textContent = msg; status.className = "form-status " + (ok ? "is-ok" : "is-err"); }
+    var q = /[?&]form=(sent|error)/.exec(location.search);
+    if (q) say(form.getAttribute(q[1] === "sent" ? "data-msg-ok" : "data-msg-err"), q[1] === "sent");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (dep.value <= arr.value) { say(form.getAttribute("data-msg-dates"), false); dep.focus(); return; }
+      btn.disabled = true; say(form.getAttribute("data-msg-sending"), true);
+      fetch(form.action, { method: "POST", body: new FormData(form), headers: { "Accept": "application/json" } })
+        .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+        .then(function (d) {
+          if (d && d.ok) { form.reset(); if (ts) ts.value = String(Date.now()); say(form.getAttribute("data-msg-ok"), true); }
+          else say(form.getAttribute(d && d.error === "dates" ? "data-msg-dates" : "data-msg-err"), false);
+        })
+        .catch(function () { say(form.getAttribute("data-msg-err"), false); })
+        .then(function () { btn.disabled = false; });
+    });
+  }
+
+  /* 9. Optional analytics — only if an ID is configured (add a consent banner first!) */
   function initOptionalAnalytics() {
     if (!config.GOOGLE_ANALYTICS_ID) return;
     var s = document.createElement("script");
@@ -192,7 +228,7 @@
 
   function init() {
     wireBookingLinks(); wireContact(); initMobileMenu(); initLangMenu();
-    initGallerySlider(); initLightbox(); initMap(); initOptionalAnalytics();
+    initGallerySlider(); initLightbox(); initMap(); initContactForm(); initOptionalAnalytics();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();

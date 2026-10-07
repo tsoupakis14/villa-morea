@@ -1,4 +1,4 @@
-# Villa Morea — Website (v3)
+# Villa Morea — Website (v4)
 
 Στατικό site σε 4 γλώσσες (EN / EL / DE / IT). Μόνο HTML, CSS και JS,
 χωρίς βάση δεδομένων. Ανεβαίνει όπως είναι σε Apache hosting (Papaki).
@@ -8,23 +8,27 @@
 | URL | Σελίδα |
 |---|---|
 | `/`, `/el/`, `/de/`, `/it/` | Αρχική σελίδα ανά γλώσσα |
-| `/chania-guide/`, `/el/odigos-chania/`, `/de/chania-reisefuehrer/`, `/it/guida-chania/` | Οδηγός Χανίων (SEO landing page) |
-| `/privacy-policy.html`, `/cookie-policy.html` (+ `/el/`, `/de/`, `/it/`) | Νομικά (noindex) |
+| `/privacy-policy.html`, `/cookie-policy.html`, `/terms.html` (+ `/el/`, `/de/`, `/it/`) | Νομικά (noindex) |
+| `/contact.php` | Αποστολή της φόρμας επικοινωνίας με email |
 | `/404.html`, `/el/404.html`, ... | Σελίδα 404 ανά γλώσσα (ρυθμίζεται στο `.htaccess`) |
 
 ## Πριν ανέβει live
 
 1. **Domain:** κάντε find & replace σε ΟΛΑ τα αρχεία το `www.YOUR-DOMAIN.gr`
    με το πραγματικό domain (HTML, `sitemap.xml`, `robots.txt`).
-2. **Στοιχεία επικοινωνίας:** συμπληρώστε στο `assets/js/config.js`
+2. **Φόρμα επικοινωνίας:** ανοίξτε το `contact.php` και συμπληρώστε
+   `$TO` (email που λαμβάνει τα αιτήματα) και `$FROM` (διεύθυνση στο δικό σας
+   domain, π.χ. `noreply@villamorea.gr`). Χωρίς `$TO` η φόρμα εμφανίζει μήνυμα
+   αποτυχίας. Κάντε μια δοκιμαστική αποστολή μετά το ανέβασμα.
+3. **Στοιχεία επικοινωνίας:** συμπληρώστε στο `assets/js/config.js`
    τα `CONTACT_EMAIL`, `CONTACT_PHONE`, `CONTACT_WHATSAPP`. Όσα μένουν κενά
    δεν εμφανίζονται καθόλου. Με αριθμό WhatsApp εμφανίζεται και το
    πράσινο floating κουμπί.
-3. **Χάρτης (προαιρετικό):** βάλτε στο `GOOGLE_MAPS_URL` το link της
+4. **Χάρτης (προαιρετικό):** βάλτε στο `GOOGLE_MAPS_URL` το link της
    ακριβούς τοποθεσίας. Αλλιώς το κουμπί δείχνει την περιοχή Μουρνιές.
-4. **SSL:** το `.htaccess` κάνει redirect σε `https://www.` με ένα βήμα.
+5. **SSL:** το `.htaccess` κάνει redirect σε `https://www.` με ένα βήμα.
    Χρειάζεται ενεργό SSL στο domain.
-5. Νομικά κείμενα: καλό είναι να τα δει νομικός.
+6. Νομικά κείμενα (Απόρρητο, Cookies, Όροι Χρήσης): καλό είναι να τα δει νομικός.
 
 ## Booking
 
@@ -34,8 +38,8 @@
 
 ## Cache (σημαντικό)
 
-Τα CSS/JS φορτώνονται ως `styles.css?v=3` και `main.js?v=3`.
-Όταν αλλάξετε κάποιο από αυτά, αυξήστε τον αριθμό (`v=4`) σε όλα τα HTML,
+Τα CSS/JS φορτώνονται ως `styles.css?v=4` και `main.js?v=4`.
+Όταν αλλάξετε κάποιο από αυτά, αυξήστε τον αριθμό (`v=5`) σε όλα τα HTML,
 αλλιώς οι επισκέπτες θα βλέπουν την παλιά έκδοση έως 30 ημέρες.
 
 ## Γραμματοσειρές (GDPR)
