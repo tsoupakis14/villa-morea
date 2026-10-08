@@ -68,7 +68,7 @@ $body .= "Guests:     $guests\n";
 $body .= "Arrival:    $arrival\n";
 $body .= "Departure:  $departure\n";
 $body .= "Language:   " . strtoupper($lang) . "\n";
-$body .= "Consent:    Privacy Policy & Terms of Use accepted\n\n";
+$body .= "Consent:    Privacy Policy & Terms and Cancellations accepted\n\n";
 $body .= "Message:\n$message\n\n";
 $body .= "--\nSent " . gmdate('Y-m-d H:i') . " UTC from " . (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '') . "\n";
 
