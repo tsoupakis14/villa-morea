@@ -492,12 +492,8 @@ a.skip-link:focus { top: 1rem; }
 /* ---- v8 layout tweaks ---- */
 /* Sections that fill the screen on desktop */
 @media (min-width: 960px) {
-  .section--screen { min-height: calc(100vh - var(--header-h)); min-height: calc(100svh - var(--header-h)); display: flex; align-items: center; }
+  .section--screen { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; }
   .section--screen > .container { width: 100%; }
-  .section--overview .overlap-grid--contained, .section--overview .overlap-grid--contained .overlap-grid__text { min-height: calc(100vh - var(--header-h) - 9rem); min-height: calc(100svh - var(--header-h) - 9rem); }
-  .section--overview .overlap-grid--contained .overlap-grid__text { max-width: 50%; padding: 3rem 3.5rem 3rem 3rem; }
-  .section--overview .overlap-grid--contained h2 { font-size: var(--step-3); }
-  .section--overview .overlap-grid--contained p.lede { font-size: 1.1rem; }
   #location .location-grid { align-items: center; }
   #location .location-grid__media { display: block; }
   #location .location-grid__media .map-embed { aspect-ratio: 1 / 1; min-height: 0; width: min(100%, calc(100vh - var(--header-h) - 9rem)); margin-left: auto; }
@@ -515,8 +511,18 @@ a.skip-link:focus { top: 1rem; }
 @media (min-width: 760px) { .section--amenities .amenity-grid { grid-template-columns: repeat(3, 1fr); gap: 3rem 2.5rem; } }
 .section--amenities .amenity-group ul { align-items: center; }
 .section--amenities .amenity-group li { display: block; }
-.section--amenities .amenity-group h3 { position: relative; padding-bottom: 0.7rem; }
-.section--amenities .amenity-group h3::after { content: ""; position: absolute; left: 50%; bottom: 0; width: 28px; height: 1px; background: var(--color-sand-500); transform: translateX(-50%); }
+.amenity-icon { display: none; }
+.section--amenities .amenity-group li { color: var(--color-ink-soft); }
+/* Option A — soft cards with an icon */
+.am-a .amenity-group { background: var(--color-white); border-radius: 12px; padding: 2rem 1.4rem 1.8rem; box-shadow: 0 10px 30px rgba(17,52,69,0.07); }
+.am-a .amenity-icon, .am-b .amenity-icon { display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.9rem; color: var(--color-aegean-700); }
+.am-a .amenity-icon { width: 60px; height: 60px; border-radius: 50%; background: var(--color-stone-100); }
+/* Option B — icon only, no boxes */
+.am-b .amenity-icon { width: auto; height: auto; color: var(--color-sand-600); }
+.am-b .amenity-icon svg { width: 38px; height: 38px; }
+/* Option C — items as soft chips */
+.am-c .amenity-group ul { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+.am-c .amenity-group li { background: var(--color-stone-100); border-radius: 999px; padding: 0.4rem 0.9rem; font-size: 0.88rem; }
 @media (max-width: 959px) {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.2rem 1rem; }
   .footer-brand, .footer-grid .footer-col:nth-of-type(2) { grid-column: 1 / -1; }
