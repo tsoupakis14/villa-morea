@@ -8,7 +8,7 @@
  *    Create it as a mailbox/alias in the Papaki panel if needed.
  * ---------------------------------------------------------------
  */
-$TO   = '';                       // e.g. 'info@villamorea.gr'  (REQUIRED)
+$TO   = 'info@villa-morea.com';                     // e.g. 'info@villamorea.gr'  (REQUIRED)
 $FROM = '';                       // e.g. 'noreply@villamorea.gr' (empty = noreply@<your domain>)
 $SUBJECT_PREFIX = 'Villa Morea – Enquiry';
 
@@ -47,7 +47,7 @@ $err = '';
 if ($name === '' || $message === '' || $consent !== '1') $err = 'missing';
 elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $err = 'email';
 elseif (strlen(preg_replace('/\D/', '', $phone)) < 6) $err = 'phone';
-elseif ($guests < 1 || $guests > 10) $err = 'guests';
+elseif ($guests < 1 || $guests > 9) $err = 'guests';
 elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $departure) || $departure <= $arrival) $err = 'dates';
 if ($err) vm_finish(false, $wantsJson, $err);
 

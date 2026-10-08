@@ -531,3 +531,4 @@ a.skip-link:focus { top: 1rem; }
 .section--why .section__head { justify-content: center; text-align: center; }
 .section--why .reasons { text-align: center; }
 .section--why .reason p { margin-inline: auto; }
+.section--amenities .am-intro { margin: 0.8rem auto 0; max-width: 60ch; }

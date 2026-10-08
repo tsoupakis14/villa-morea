@@ -40,8 +40,8 @@ window.VILLA_MOREA_CONFIG = {
    * hidden on the site (no placeholder text is ever shown).
    * A WhatsApp number also turns on the floating WhatsApp button.
    * ------------------------------------------------------- */
-  CONTACT_EMAIL: "",              // e.g. "info@villamorea.gr"
-  CONTACT_PHONE: "",              // e.g. "+30 28210 00000" (INFORMATION REQUIRED)
+  CONTACT_EMAIL: "info@villa-morea.com",
+  CONTACT_PHONE: "+30 210 300 2211",
   CONTACT_WHATSAPP: "",           // full international number, digits only, e.g. "306900000000"
 
   /* ---------------------------------------------------------
