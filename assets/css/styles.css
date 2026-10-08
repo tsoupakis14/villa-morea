@@ -527,3 +527,7 @@ a.skip-link:focus { top: 1rem; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.2rem 1rem; }
   .footer-brand, .footer-grid .footer-col:nth-of-type(2) { grid-column: 1 / -1; }
 }
+/* Why stay here: centered, no numbers */
+.section--why .section__head { justify-content: center; text-align: center; }
+.section--why .reasons { text-align: center; }
+.section--why .reason p { margin-inline: auto; }
