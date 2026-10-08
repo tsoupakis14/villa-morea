@@ -171,7 +171,7 @@
         f.src = box.getAttribute("data-src");
         f.title = box.getAttribute("data-title") || "Map";
         f.loading = "lazy";
-        f.referrerPolicy = "no-referrer-when-downgrade";
+        f.referrerPolicy = "strict-origin-when-cross-origin";
         f.setAttribute("allowfullscreen", "");
         box.appendChild(f);
         box.classList.add("is-loaded");
