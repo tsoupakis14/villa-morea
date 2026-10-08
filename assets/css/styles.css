@@ -194,7 +194,7 @@ a.skip-link:focus { top: 1rem; }
 /* -----------------------------------------------------------------
    5. HERO
    ----------------------------------------------------------------- */
-.hero { position: relative; min-height: calc(100vh - var(--header-h)); min-height: calc(100svh - var(--header-h)); display: flex; align-items: flex-end; color: var(--color-white); overflow: hidden; }
+.hero { position: relative; background: var(--color-aegean-900); min-height: calc(100vh - var(--header-h)); min-height: calc(100svh - var(--header-h)); display: flex; align-items: flex-end; color: var(--color-white); overflow: hidden; }
 .hero__media, .page-hero__media { position: absolute; inset: 0; z-index: 0; }
 .hero__media img, .page-hero__media img { width: 100%; height: 100%; object-fit: cover; }
 @media (max-width: 699px) { .hero__media img { object-position: 62% 100%; } }
@@ -219,7 +219,7 @@ a.skip-link:focus { top: 1rem; }
 }
 
 /* Sub-page hero */
-.page-hero { position: relative; color: var(--color-white); min-height: 46vh; display: flex; align-items: flex-end; overflow: hidden; }
+.page-hero { position: relative; background: var(--color-aegean-900); color: var(--color-white); min-height: 46vh; display: flex; align-items: flex-end; overflow: hidden; }
 .page-hero__content { position: relative; z-index: 2; width: 100%; padding-block: 5rem 2.5rem; }
 .page-hero h1 { color: var(--color-white); max-width: 24ch; }
 .page-hero .lede { color: rgba(255,255,255,0.92); }
@@ -532,3 +532,20 @@ a.skip-link:focus { top: 1rem; }
 .section--why .reasons { text-align: center; }
 .section--why .reason p { margin-inline: auto; }
 .section--amenities .am-intro { margin: 0.8rem auto 0; max-width: 60ch; }
+/* reCAPTCHA v3: badge hidden, the required notice is shown under the form instead */
+.grecaptcha-badge { visibility: hidden !important; }
+.recaptcha-note { grid-column: 1 / -1; margin: 0; font-size: 0.75rem; color: var(--color-ink-soft); max-width: none; }
+.recaptcha-note a { color: inherit; }
+
+/* Cookie consent banner (only shown when GOOGLE_ANALYTICS_ID is set) */
+.cookie-banner { position: fixed; z-index: 120; left: 0.75rem; right: 0.75rem; bottom: calc(4.6rem + env(safe-area-inset-bottom)); background: var(--color-white); color: var(--color-ink); border: 1px solid var(--color-line); border-top: 2px solid var(--color-sand-500); box-shadow: 0 10px 30px rgba(10,30,45,0.18); padding: 1.1rem 1.2rem; font-size: 0.9rem; line-height: 1.5; }
+.cookie-banner[hidden] { display: none; }
+.cookie-banner p { margin: 0 0 0.9rem; max-width: none; }
+.cookie-banner a { color: var(--color-aegean-700); }
+.cookie-banner__actions { display: flex; gap: 0.6rem; }
+.cookie-banner__actions .btn { flex: 1 1 0; padding: 0.7em 1em; font-size: 0.9rem; }
+@media (min-width: 960px) {
+  .cookie-banner { left: 1.5rem; right: auto; bottom: 1.5rem; max-width: 26rem; }
+}
+.footer-linkbtn { background: none; border: 0; padding: 0; font: inherit; color: rgba(255,255,255,0.82); cursor: pointer; text-align: left; transition: color .2s var(--ease); }
+.footer-linkbtn:hover { color: var(--color-white); }

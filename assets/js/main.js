@@ -202,11 +202,40 @@
     function say(msg, ok) { status.textContent = msg; status.className = "form-status " + (ok ? "is-ok" : "is-err"); }
     var q = /[?&]form=(sent|error)/.exec(location.search);
     if (q) say(form.getAttribute(q[1] === "sent" ? "data-msg-ok" : "data-msg-err"), q[1] === "sent");
+    /* Google reCAPTCHA v3 — loaded only when the visitor starts using the form */
+    var siteKey = (config.RECAPTCHA_SITE_KEY || "").trim(), rcPromise = null;
+    function loadRecaptcha() {
+      if (!siteKey) return Promise.resolve(null);
+      if (rcPromise) return rcPromise;
+      rcPromise = new Promise(function (resolve) {
+        var sc = document.createElement("script");
+        sc.src = "https://www.google.com/recaptcha/api.js?render=" + encodeURIComponent(siteKey);
+        sc.async = true;
+        sc.onload = function () { window.grecaptcha.ready(function () { resolve(window.grecaptcha); }); };
+        sc.onerror = function () { resolve(null); };
+        document.head.appendChild(sc);
+      });
+      return rcPromise;
+    }
+    function getToken() {
+      return loadRecaptcha().then(function (g) {
+        if (!g) return "";
+        return g.execute(siteKey, { action: "contact" }).then(function (t) { return t; }, function () { return ""; });
+      });
+    }
+    if (siteKey) {
+      $$("[data-recaptcha-note]").forEach(function (n) { n.hidden = false; });
+      form.addEventListener("focusin", loadRecaptcha, { once: true });
+    }
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (dep.value <= arr.value) { say(form.getAttribute("data-msg-dates"), false); dep.focus(); return; }
       btn.disabled = true; say(form.getAttribute("data-msg-sending"), true);
-      fetch(form.action, { method: "POST", body: new FormData(form), headers: { "Accept": "application/json" } })
+      getToken().then(function (token) {
+        var fd = new FormData(form);
+        if (token) fd.append("g-recaptcha-response", token);
+        return fetch(form.action, { method: "POST", body: fd, headers: { "Accept": "application/json" } });
+      })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
         .then(function (d) {
           if (d && d.ok) { form.reset(); if (ts) ts.value = String(Date.now()); say(form.getAttribute("data-msg-ok"), true); }
@@ -217,20 +246,59 @@
     });
   }
 
-  /* 9. Optional analytics — only if an ID is configured (add a consent banner first!) */
-  function initOptionalAnalytics() {
-    if (!config.GOOGLE_ANALYTICS_ID) return;
-    var s = document.createElement("script");
-    s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + config.GOOGLE_ANALYTICS_ID;
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { window.dataLayer.push(arguments); }
-    gtag("js", new Date()); gtag("config", config.GOOGLE_ANALYTICS_ID);
+  /* 9. Google Analytics 4 — loaded ONLY after the visitor clicks "Accept".
+     Nothing loads and no banner shows while GOOGLE_ANALYTICS_ID is empty. */
+  function initConsent() {
+    var id = config.GOOGLE_ANALYTICS_ID;
+    if (!id) return;
+    var KEY = "vm_consent", MAX_AGE = 365 * 24 * 3600 * 1000;
+    var banner = document.querySelector("[data-cookie-banner]");
+    var loaded = false;
+    function read() {
+      try { var v = JSON.parse(localStorage.getItem(KEY) || "null");
+        return v && v.t && (Date.now() - v.t) < MAX_AGE ? v.v : null; } catch (e) { return null; }
+    }
+    function save(v) { try { localStorage.setItem(KEY, JSON.stringify({ v: v, t: Date.now() })); } catch (e) {} }
+    function loadGA() {
+      if (loaded) return; loaded = true;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag("consent", "default", { analytics_storage: "granted", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" });
+      window.gtag("js", new Date());
+      window.gtag("config", id, { allow_google_signals: false, allow_ad_personalization_signals: false });
+      var s = document.createElement("script");
+      s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(id);
+      document.head.appendChild(s);
+    }
+    function clearGA() {
+      var host = location.hostname.replace(/^www\./, "");
+      document.cookie.split(";").forEach(function (c) {
+        var n = c.split("=")[0].trim();
+        if (n === "_ga" || n.indexOf("_ga_") === 0 || n === "_gid") {
+          ["", "; domain=" + host, "; domain=." + host].forEach(function (d) {
+            document.cookie = n + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/" + d;
+          });
+        }
+      });
+    }
+    function show() { if (banner) banner.hidden = false; }
+    function hide() { if (banner) banner.hidden = true; }
+    var acc = document.querySelector("[data-cookie-accept]"), rej = document.querySelector("[data-cookie-reject]");
+    if (acc) acc.addEventListener("click", function () { save("granted"); hide(); loadGA(); });
+    if (rej) rej.addEventListener("click", function () {
+      var was = loaded; save("denied"); hide(); clearGA();
+      if (was) location.reload(); /* fully stop GA if it was running */
+    });
+    document.querySelectorAll("[data-cookie-row]").forEach(function (r) { r.hidden = false; });
+    document.querySelectorAll("[data-cookie-settings]").forEach(function (b) { b.addEventListener("click", show); });
+    var choice = read();
+    if (choice === "granted") loadGA();
+    else if (choice !== "denied") show();
   }
 
   function init() {
     wireBookingLinks(); wireContact(); initMobileMenu(); initLangMenu();
-    initGallerySlider(); initLightbox(); initMap(); initContactForm(); initOptionalAnalytics();
+    initGallerySlider(); initLightbox(); initMap(); initContactForm(); initConsent();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();

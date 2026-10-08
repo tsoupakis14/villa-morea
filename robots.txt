@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.YOUR-DOMAIN.gr/sitemap.xml
+Sitemap: https://www.villamorea.gr/sitemap.xml

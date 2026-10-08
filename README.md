@@ -1,4 +1,4 @@
-# Villa Morea — Website
+# Villa Morea — Website (www.villamorea.gr)
 
 Στατικό site σε 4 γλώσσες (EN / EL / DE / IT). Μόνο HTML, CSS και JS,
 χωρίς βάση δεδομένων. Ανεβαίνει όπως είναι σε Apache hosting (Papaki).
@@ -14,18 +14,21 @@
 
 ## Πριν ανέβει live
 
-1. **Domain:** κάντε find & replace σε ΟΛΑ τα αρχεία το `www.YOUR-DOMAIN.gr`
-   με το πραγματικό domain (HTML, `sitemap.xml`, `robots.txt`).
+1. **Domain:** `www.villamorea.gr` — έχει ήδη περαστεί σε όλα τα αρχεία (canonical, hreflang, sitemap, robots, schema).
 2. **Φόρμα επικοινωνίας (`contact.php`, χρειάζεται PHP — δουλεύει στο Papaki, όχι σε Cloudflare/GitHub Pages):**
    - `$TO`: λίστα με τα email που λαμβάνουν τα αιτήματα. Τώρα: `['tsoupakis14@gmail.com']`.
      Για δεύτερο παραλήπτη: `['tsoupakis14@gmail.com', 'άλλο@email.gr']`.
-   - Προτείνεται **SMTP**: φτιάξτε στο Papaki ένα mailbox στο domain του site (π.χ. `noreply@villa-morea.gr`)
+   - Προτείνεται **SMTP**: φτιάξτε στο Papaki ένα mailbox στο domain του site (π.χ. `noreply@villamorea.gr`)
      και συμπληρώστε στο `$SMTP` host / port / user / pass (Papaki: συνήθως `mail.<domain>`, 465/ssl ή 587/tls).
      Αν μείνει κενό, χρησιμοποιείται το `mail()` του server.
-   - Προστασία spam: κρυφό πεδίο, ελάχιστος χρόνος 3", έως 5 αιτήματα/ώρα ανά IP.
+   - Προστασία spam: κρυφό πεδίο, ελάχιστος χρόνος 3", έως 5 αιτήματα/ώρα ανά IP **και Google reCAPTCHA v3**:
+     φτιάξτε κλειδιά στο https://www.google.com/recaptcha/admin (τύπος v3, domain `villamorea.gr`),
+     βάλτε το **Site key** στο `assets/js/config.js` → `RECAPTCHA_SITE_KEY` και το **Secret key**
+     στο `contact.php` → `$RECAPTCHA_SECRET`. Κενά = reCAPTCHA εκτός (η φόρμα δουλεύει κανονικά).
+   - Plesk: ενεργοποιήστε **DKIM** (Mail → Mail Settings) και ελέγξτε ότι υπάρχει **SPF** record
+     στο DNS του domain — βοηθούν πολύ να μην πηγαίνουν τα email στα spam.
    - Κάντε μια δοκιμαστική αποστολή μετά το ανέβασμα (ελέγξτε και τον φάκελο Spam).
-3. **Στοιχεία επικοινωνίας:** τηλέφωνο +30 210 300 2211 και info@villa-morea.com είναι ήδη στο footer.
-   Για WhatsApp (προαιρετικό) συμπληρώστε `CONTACT_WHATSAPP` στο `assets/js/config.js`.
+3. **Στοιχεία επικοινωνίας:** τηλέφωνο +30 210 300 2211 και info@villamorea.gr είναι ήδη στο footer.
 4. **Χάρτης:** δείχνει ήδη την πινέζα «Villa Morea With Pool Near Chania City» (φορτώνει μόνο με κλικ).
 5. **SSL:** το `.htaccess` κάνει redirect σε `https://www.` με ένα βήμα.
    Χρειάζεται ενεργό SSL στο domain.
@@ -53,10 +56,6 @@
 Aboreto + Work Sans για λατινικούς χαρακτήρες, EB Garamond + Commissioner
 για ελληνικά. Τα ελληνικά αρχεία κατεβαίνουν μόνο όταν η σελίδα έχει ελληνικό κείμενο.
 
-## Φωτογραφίες
-
-Κάθε φωτογραφία έχει μια full έκδοση και μια `-800.webp` για κινητά (srcset).
-Αν αντικαταστήσετε φωτογραφία, κρατήστε το ίδιο όνομα και φτιάξτε και τη `-800` έκδοση.
 Το `assets/images/og/` έχει το JPG 1200×630 για τα previews σε Facebook/WhatsApp.
 
 ## Επεξεργασία κειμένων
@@ -65,7 +64,18 @@ Aboreto + Work Sans για λατινικούς χαρακτήρες, EB Garamon
 Αλλάζετε τα κείμενα στα `content_*.py` και τρέχετε `python3 build.py`.
 Εναλλακτικά μπορείτε να επεξεργαστείτε απευθείας τα HTML.
 
-## Analytics
+## Google Analytics & cookies
 
-Δεν φορτώνεται κανένα tracking. Αν προστεθεί Google Analytics στο `config.js`,
-πρέπει πρώτα να μπει banner συγκατάθεσης και να ενημερωθεί η Πολιτική Cookies.
+- Φτιάξτε GA4 property στο https://analytics.google.com και βάλτε το **Measurement ID** (`G-XXXXXXXXXX`)
+  στο `assets/js/config.js` → `GOOGLE_ANALYTICS_ID`.
+- Μόλις μπει το ID, εμφανίζεται αυτόματα **banner cookies** (Αποδοχή / Απόρριψη) σε 4 γλώσσες.
+  Το GA4 φορτώνει **μόνο μετά την Αποδοχή**· με Απόρριψη δεν φορτώνει τίποτα.
+  Η επιλογή κρατιέται 12 μήνες και αλλάζει από το «Ρυθμίσεις cookies» στο footer.
+- Στο GA4: Admin → Data collection → Google signals off, Data retention 14 μήνες.
+- Η Πολιτική Απορρήτου (ενότητα «Cookies και στατιστικά», `#cookies`) περιγράφει ήδη το GA4.
+
+## Google Search Console
+
+- Προσθέστε **Domain property** `villamorea.gr` στο https://search.google.com/search-console
+  και περάστε το TXT record που δίνει η Google στο DNS του Plesk.
+- Μετά την επιβεβαίωση: Sitemaps → υποβολή `https://www.villamorea.gr/sitemap.xml`.

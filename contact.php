@@ -30,6 +30,12 @@ $SMTP = [
 ];
 
 $RATE_LIMIT_PER_HOUR = 5;  // max enquiries per visitor IP per hour
+
+/* Google reCAPTCHA v3 — SECRET key from https://www.google.com/recaptcha/admin
+   (the SITE key goes in assets/js/config.js → RECAPTCHA_SITE_KEY).
+   Empty = reCAPTCHA check off. */
+$RECAPTCHA_SECRET    = '';
+$RECAPTCHA_MIN_SCORE = 0.5;   // 0.0 (bot) … 1.0 (human)
 /* ================================================================ */
 
 header('X-Content-Type-Options: nosniff');
@@ -80,6 +86,28 @@ elseif (strlen(preg_replace('/\D/', '', $phone)) < 6) $err = 'phone';
 elseif ($guests < 1 || $guests > 9) $err = 'guests';
 elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $departure) || $departure <= $arrival) $err = 'dates';
 if ($err) vm_finish(false, $wantsJson, $err);
+
+/* ---- Google reCAPTCHA v3 check ---- */
+if ($RECAPTCHA_SECRET !== '') {
+    $token = isset($_POST['g-recaptcha-response']) ? (string)$_POST['g-recaptcha-response'] : '';
+    if ($token === '') vm_finish(false, $wantsJson, 'captcha');
+    $post = http_build_query(['secret' => $RECAPTCHA_SECRET, 'response' => $token, 'remoteip' => $ip]);
+    $resp = false;
+    if (function_exists('curl_init')) {
+        $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+        curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $post, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 10]);
+        $resp = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $resp = @file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create(['http' => [
+            'method' => 'POST', 'header' => "Content-Type: application/x-www-form-urlencoded\r\n", 'content' => $post, 'timeout' => 10]]));
+    }
+    $rc = $resp ? json_decode($resp, true) : null;
+    $okCaptcha = is_array($rc) && !empty($rc['success'])
+        && (!isset($rc['score']) || $rc['score'] >= $RECAPTCHA_MIN_SCORE)
+        && (!isset($rc['action']) || $rc['action'] === 'contact');
+    if (!$okCaptcha) vm_finish(false, $wantsJson, 'captcha');
+}
 $TO = array_values(array_filter(array_map('trim', (array)$TO), function ($a) { return filter_var($a, FILTER_VALIDATE_EMAIL); }));
 if (!$TO) vm_finish(false, $wantsJson, 'not_configured');
 

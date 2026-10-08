@@ -22,7 +22,7 @@ window.VILLA_MOREA_CONFIG = {
    * Replace with your real domain once it is registered/pointed
    * at Papaki hosting. Do NOT include a trailing slash.
    * ------------------------------------------------------- */
-  WEBSITE_DOMAIN: "https://www.YOUR-DOMAIN.gr",
+  WEBSITE_DOMAIN: "https://www.villamorea.gr",
 
   /* ---------------------------------------------------------
    * 2. OFFICIAL DIRECT BOOKING ENGINE (Hotelyzer)
@@ -40,7 +40,7 @@ window.VILLA_MOREA_CONFIG = {
    * hidden on the site (no placeholder text is ever shown).
    * A WhatsApp number also turns on the floating WhatsApp button.
    * ------------------------------------------------------- */
-  CONTACT_EMAIL: "info@villa-morea.com",
+  CONTACT_EMAIL: "info@villamorea.gr",
   CONTACT_PHONE: "+30 210 300 2211",
   CONTACT_WHATSAPP: "",           // full international number, digits only, e.g. "306900000000"
 
@@ -60,14 +60,23 @@ window.VILLA_MOREA_CONFIG = {
   LOCATION_AREA: "Mournies, Chania, Crete",
 
   /* ---------------------------------------------------------
-   * 5. OPTIONAL ANALYTICS / TRACKING
-   * Leave blank to load NOTHING and show no cookie banner.
-   * If you add an ID here later, you must also add a
-   * GDPR-compliant consent banner BEFORE any non-essential
-   * script fires. See README.md, "Adding analytics later".
+   * 4b. GOOGLE reCAPTCHA v3 (spam protection for the contact form)
+   * Create keys at https://www.google.com/recaptcha/admin
+   * (type: reCAPTCHA v3, domain: villamorea.gr). Put the SITE key
+   * here and the SECRET key in contact.php ($RECAPTCHA_SECRET).
+   * Empty = reCAPTCHA off (the form still has its own spam checks).
    * ------------------------------------------------------- */
-  GOOGLE_ANALYTICS_ID: "",   // e.g. "G-XXXXXXXXXX"
-  META_PIXEL_ID: "",         // e.g. "000000000000000"
+  RECAPTCHA_SITE_KEY: "",
+
+  /* ---------------------------------------------------------
+   * 5. GOOGLE ANALYTICS 4 (with cookie consent banner)
+   * Paste the GA4 Measurement ID, e.g. "G-XXXXXXXXXX".
+   * When set: a cookie banner appears (Accept / Reject) and GA4 is
+   * loaded ONLY after "Accept". A "Cookie settings" link appears in
+   * the footer so visitors can change their choice.
+   * Empty = nothing loads and no banner is shown.
+   * ------------------------------------------------------- */
+  GOOGLE_ANALYTICS_ID: "",
 
   /* ---------------------------------------------------------
    * 6. MANAGEMENT CREDIT (footer)
