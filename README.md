@@ -17,7 +17,8 @@
 1. **Domain:** κάντε find & replace σε ΟΛΑ τα αρχεία το `www.YOUR-DOMAIN.gr`
    με το πραγματικό domain (HTML, `sitemap.xml`, `robots.txt`).
 2. **Φόρμα επικοινωνίας (`contact.php`, χρειάζεται PHP — δουλεύει στο Papaki, όχι σε Cloudflare/GitHub Pages):**
-   - `$TO`: email που λαμβάνει τα αιτήματα (τώρα το test `tsoupakis14@gmail.com` → αλλαγή σε `info@villa-morea.com` πριν το live).
+   - `$TO`: λίστα με τα email που λαμβάνουν τα αιτήματα. Τώρα: `['tsoupakis14@gmail.com']`.
+     Για δεύτερο παραλήπτη: `['tsoupakis14@gmail.com', 'άλλο@email.gr']`.
    - Προτείνεται **SMTP**: φτιάξτε στο Papaki ένα mailbox στο domain του site (π.χ. `noreply@villa-morea.gr`)
      και συμπληρώστε στο `$SMTP` host / port / user / pass (Papaki: συνήθως `mail.<domain>`, 465/ssl ή 587/tls).
      Αν μείνει κενό, χρησιμοποιείται το `mail()` του server.

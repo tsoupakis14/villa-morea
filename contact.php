@@ -4,7 +4,8 @@
  * =================================================================
  * SETTINGS — edit only this block.
  *
- * $TO    Address that receives the enquiries.
+ * $TO    Address(es) that receive the enquiries. To add more, list them:
+ *        ['tsoupakis14@gmail.com', 'bookings@example.com']
  * $FROM  Sender address. MUST be on the website's own domain
  *        (e.g. noreply@villa-morea.gr), otherwise Gmail/Outlook may
  *        send the message to spam. Empty = noreply@<current domain>.
@@ -16,7 +17,7 @@
  *   (or port 587, secure 'tls'), user = full email, pass = mailbox password.
  * =================================================================
  */
-$TO   = 'tsoupakis14@gmail.com';   // TEST address — change to 'info@villa-morea.com' before launch
+$TO   = ['tsoupakis14@gmail.com'];
 $FROM = '';
 $SUBJECT_PREFIX = 'Villa Morea – Enquiry';
 
@@ -79,7 +80,8 @@ elseif (strlen(preg_replace('/\D/', '', $phone)) < 6) $err = 'phone';
 elseif ($guests < 1 || $guests > 9) $err = 'guests';
 elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $arrival) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $departure) || $departure <= $arrival) $err = 'dates';
 if ($err) vm_finish(false, $wantsJson, $err);
-if ($TO === '') vm_finish(false, $wantsJson, 'not_configured');
+$TO = array_values(array_filter(array_map('trim', (array)$TO), function ($a) { return filter_var($a, FILTER_VALIDATE_EMAIL); }));
+if (!$TO) vm_finish(false, $wantsJson, 'not_configured');
 
 /* ---- Build the message ---- */
 $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
@@ -128,11 +130,11 @@ function vm_smtp($cfg, $from, $to, $replyTo, $replyName, $subject, $body, $enc, 
         if (!$cmd(base64_encode($cfg['pass']), 235)) return false;
     }
     if (!$cmd("MAIL FROM:<$from>", 250)) return false;
-    if (!$cmd("RCPT TO:<$to>", 250)) return false;
+    foreach ($to as $rcpt) { if (!$cmd("RCPT TO:<$rcpt>", 250)) return false; }
     if (!$cmd('DATA', 354)) return false;
     $msg  = "Date: " . date('r') . "\r\n";
     $msg .= "From: " . $enc('Villa Morea Website') . " <$from>\r\n";
-    $msg .= "To: <$to>\r\n";
+    $msg .= "To: " . implode(', ', array_map(function ($a) { return "<$a>"; }, $to)) . "\r\n";
     $msg .= "Reply-To: " . $enc($replyName) . " <$replyTo>\r\n";
     $msg .= "Subject: " . $enc($subject) . "\r\n";
     $msg .= "Message-ID: <" . bin2hex(random_bytes(12)) . "@$host>\r\n";
@@ -151,7 +153,7 @@ if ($SMTP['host'] !== '') {
     $headers  = "From: " . $enc('Villa Morea Website') . " <$from>\r\n";
     $headers .= "Reply-To: " . $enc($nameHeader) . " <$email>\r\n";
     $headers .= "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n";
-    $sent = @mail($TO, $enc($subject), chunk_split(base64_encode($body)), $headers, '-f' . $from);
+    $sent = @mail(implode(', ', $TO), $enc($subject), chunk_split(base64_encode($body)), $headers, '-f' . $from);
 }
 
 if ($sent) { $hits[] = time(); @file_put_contents($rlFile, implode(',', $hits)); }
