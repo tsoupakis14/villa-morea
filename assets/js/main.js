@@ -97,10 +97,12 @@
     var items = $$(".gallery__item", track);
     var count = $("[data-gallery-count]", gallery);
     var prev = $("[data-gallery-prev]", gallery), next = $("[data-gallery-next]", gallery);
+    var pad = 0;
+    function measure() { pad = parseFloat(getComputedStyle(track).paddingLeft || 0) || 0; }
     function current() {
-      var left = track.scrollLeft, best = 0, dist = Infinity;
+      var left = track.scrollLeft, base = track.offsetLeft + pad, best = 0, dist = Infinity;
       items.forEach(function (it, i) {
-        var d = Math.abs(it.offsetLeft - track.offsetLeft - parseFloat(getComputedStyle(track).paddingLeft || 0) - left);
+        var d = Math.abs(it.offsetLeft - base - left);
         if (d < dist) { dist = d; best = i; }
       });
       return best;
@@ -113,15 +115,15 @@
     }
     function go(i) {
       i = Math.max(0, Math.min(items.length - 1, i));
-      var pad = parseFloat(getComputedStyle(track).paddingLeft || 0);
       track.scrollTo({ left: items[i].offsetLeft - track.offsetLeft - pad, behavior: "smooth" });
     }
     if (prev) prev.addEventListener("click", function () { go(current() - 1); });
     if (next) next.addEventListener("click", function () { go(current() + 1); });
     var t;
     track.addEventListener("scroll", function () { clearTimeout(t); t = setTimeout(update, 60); }, { passive: true });
-    window.addEventListener("resize", update);
-    update();
+    window.addEventListener("resize", function () { measure(); update(); });
+    // first measurement after layout is done (avoids a forced reflow during page load)
+    window.addEventListener("load", function () { requestAnimationFrame(function () { measure(); update(); }); });
   }
 
   /* 6. Lightbox (accessible dialog) */
