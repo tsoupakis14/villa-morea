@@ -549,3 +549,12 @@ a.skip-link:focus { top: 1rem; }
 }
 .footer-linkbtn { background: none; border: 0; padding: 0; font: inherit; color: rgba(255,255,255,0.82); cursor: pointer; text-align: left; transition: color .2s var(--ease); }
 .footer-linkbtn:hover { color: var(--color-white); }
+
+/* Thank-you page (after the contact form) */
+.thanks-page { min-height: 62vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-block: 5rem 4rem; }
+.thanks-page__mark { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 50%; border: 1px solid var(--color-sand-500); color: var(--color-sand-600); margin-bottom: 1.4rem; }
+.thanks-page h1 { max-width: 20ch; margin-inline: auto; }
+.thanks-page p { max-width: 36rem; margin-inline: auto; }
+.thanks-page__note { font-size: 0.92rem; color: var(--color-ink-soft); }
+.thanks-page .final-cta__ctas { margin-top: 1.6rem; justify-content: center; }
+.thanks-page .btn-outline:hover { background: var(--color-stone-100); }

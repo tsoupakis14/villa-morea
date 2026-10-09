@@ -16,8 +16,13 @@
 
 1. **Domain:** `www.villamorea.gr` — έχει ήδη περαστεί σε όλα τα αρχεία (canonical, hreflang, sitemap, robots, schema).
 2. **Φόρμα επικοινωνίας (`contact.php`, χρειάζεται PHP — δουλεύει στο Papaki, όχι σε Cloudflare/GitHub Pages):**
-   - `$TO`: λίστα με τα email που λαμβάνουν τα αιτήματα. Τώρα: `['tsoupakis14@gmail.com']`.
-     Για δεύτερο παραλήπτη: `['tsoupakis14@gmail.com', 'άλλο@email.gr']`.
+   - `$TO`: λίστα με τα email που λαμβάνουν τα αιτήματα. Τώρα: `['villamorea@gmail.com']`.
+     Για δεύτερο παραλήπτη: `['villamorea@gmail.com', 'άλλο@email.gr']`.
+   - Μετά την αποστολή ο επισκέπτης πηγαίνει στη σελίδα **Ευχαριστούμε** (`/thank-you.html`, `/el/thank-you.html` κ.λπ., noindex).
+     Στο Analytics μπορεί να μετρηθεί ως conversion (page view της thank-you).
+   - **Αυτόματο email επιβεβαίωσης** στον επισκέπτη, στη γλώσσα της σελίδας (`$AUTOREPLY = true`).
+     Όταν ο επισκέπτης απαντά σε αυτό, η απάντηση πηγαίνει στο `$AUTOREPLY_REPLY_TO` (τώρα `info@villamorea.gr` — πρέπει να υπάρχει το mailbox ή forward).
+     Γράφει ρητά ότι δεν αποτελεί κράτηση (με link στο online booking) και δεν περιέχει το κείμενο του μηνύματος (ασφάλεια).
    - Προτείνεται **SMTP**: φτιάξτε στο Papaki ένα mailbox στο domain του site (π.χ. `noreply@villamorea.gr`)
      και συμπληρώστε στο `$SMTP` host / port / user / pass (Papaki: συνήθως `mail.<domain>`, 465/ssl ή 587/tls).
      Αν μείνει κενό, χρησιμοποιείται το `mail()` του server.

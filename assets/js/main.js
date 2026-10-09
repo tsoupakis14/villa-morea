@@ -187,18 +187,8 @@
     if (!form) return;
     var status = $("[data-form-status]", form);
     var btn = $('button[type="submit"]', form);
-    var arr = $("[data-date-arrival]", form), dep = $("[data-date-departure]", form);
     var ts = $("[data-form-ts]", form);
     if (ts) ts.value = String(Date.now());
-    function iso(d) { return d.toISOString().slice(0, 10); }
-    var today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-    arr.min = iso(today); dep.min = iso(today);
-    arr.addEventListener("change", function () {
-      if (!arr.value) return;
-      var n = new Date(arr.value); n.setDate(n.getDate() + 1);
-      dep.min = iso(n);
-      if (dep.value && dep.value <= arr.value) dep.value = "";
-    });
     function say(msg, ok) { status.textContent = msg; status.className = "form-status " + (ok ? "is-ok" : "is-err"); }
     var q = /[?&]form=(sent|error)/.exec(location.search);
     if (q) say(form.getAttribute(q[1] === "sent" ? "data-msg-ok" : "data-msg-err"), q[1] === "sent");
@@ -229,7 +219,6 @@
     }
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      if (dep.value <= arr.value) { say(form.getAttribute("data-msg-dates"), false); dep.focus(); return; }
       btn.disabled = true; say(form.getAttribute("data-msg-sending"), true);
       getToken().then(function (token) {
         var fd = new FormData(form);
@@ -238,8 +227,8 @@
       })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
         .then(function (d) {
-          if (d && d.ok) { form.reset(); if (ts) ts.value = String(Date.now()); say(form.getAttribute("data-msg-ok"), true); }
-          else say(form.getAttribute(d && d.error === "dates" ? "data-msg-dates" : "data-msg-err"), false);
+          if (d && d.ok) { var ty = form.getAttribute("data-thanks"); if (ty) { window.location.href = ty; return; } form.reset(); if (ts) ts.value = String(Date.now()); say(form.getAttribute("data-msg-ok"), true); }
+          else say(form.getAttribute("data-msg-err"), false);
         })
         .catch(function () { say(form.getAttribute("data-msg-err"), false); })
         .then(function () { btn.disabled = false; });
