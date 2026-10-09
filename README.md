@@ -19,7 +19,7 @@
    - `$TO`: λίστα με τα email που λαμβάνουν τα αιτήματα. Τώρα: `['villamorea@gmail.com']`.
      Για δεύτερο παραλήπτη: `['villamorea@gmail.com', 'άλλο@email.gr']`.
    - Μετά την αποστολή ο επισκέπτης πηγαίνει στη σελίδα **Ευχαριστούμε** (`/thank-you.html`, `/el/thank-you.html` κ.λπ., noindex).
-     Στο Analytics μπορεί να μετρηθεί ως conversion (page view της thank-you).
+     Στέλνει στο Analytics το event `generate_lead` (σημειώστε το ως Key event στο GA4).
    - **Αυτόματο email επιβεβαίωσης** στον επισκέπτη, στη γλώσσα της σελίδας (`$AUTOREPLY = true`).
      Όταν ο επισκέπτης απαντά σε αυτό, η απάντηση πηγαίνει στο `$AUTOREPLY_REPLY_TO` (τώρα `info@villamorea.gr` — πρέπει να υπάρχει το mailbox ή forward).
      Γράφει ρητά ότι δεν αποτελεί κράτηση (με link στο online booking) και δεν περιέχει το κείμενο του μηνύματος (ασφάλεια).

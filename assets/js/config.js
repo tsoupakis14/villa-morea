@@ -76,7 +76,7 @@ window.VILLA_MOREA_CONFIG = {
    * the footer so visitors can change their choice.
    * Empty = nothing loads and no banner is shown.
    * ------------------------------------------------------- */
-  GOOGLE_ANALYTICS_ID: "",
+  GOOGLE_ANALYTICS_ID: "G-BRCPJ10CTH",
 
   /* ---------------------------------------------------------
    * 6. MANAGEMENT CREDIT (footer)

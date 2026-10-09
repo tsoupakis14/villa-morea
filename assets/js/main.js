@@ -255,6 +255,9 @@
       window.gtag("consent", "default", { analytics_storage: "granted", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" });
       window.gtag("js", new Date());
       window.gtag("config", id, { allow_google_signals: false, allow_ad_personalization_signals: false });
+      /* thank-you page → "generate_lead" event (mark it as a Key event in GA4) */
+      var evEl = document.querySelector("[data-ga-event]");
+      if (evEl) window.gtag("event", evEl.getAttribute("data-ga-event"), { form_name: "contact", language: document.documentElement.lang });
       var s = document.createElement("script");
       s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(id);
       document.head.appendChild(s);
